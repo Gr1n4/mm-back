@@ -7,6 +7,11 @@ import { rootConfiguration } from 'config/configuration';
 import { ModModule } from './mod/mod.module';
 import { AwsSdkModule } from 'nest-aws-sdk';
 import { S3 } from 'aws-sdk';
+import { FileModule } from './file';
+import { PictureModule } from './picture';
+import { AuthModule } from './auth';
+import { SessionModule } from './session/session.module';
+import { UserModule } from './user';
 
 @Module({
   imports: [
@@ -25,6 +30,7 @@ import { S3 } from 'aws-sdk';
       defaultServiceOptions: {
         useFactory: (configService: ConfigService) => {
           const config = configService.get('minio')!;
+          console.log('minio config: %o', config);
           return {
             ...config,
             s3ForcePathStyle: true,
@@ -35,7 +41,12 @@ import { S3 } from 'aws-sdk';
       },
       services: [S3],
     }),
+    AuthModule,
+    FileModule,
     ModModule,
+    PictureModule,
+    SessionModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
