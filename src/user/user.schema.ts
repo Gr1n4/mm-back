@@ -28,8 +28,8 @@ export class UserModel {
 export type UserDocument = HydratedDocument<UserModel>;
 export const UserSchema = SchemaFactory.createForClass(UserModel);
 
-UserSchema.virtual('password').set((that: UserDocument, pwd: string) => {
+UserSchema.virtual('password').set(function (this: UserDocument, pwd: string) {
   const salt = randomBytes(16).toString('hex');
   const passwordHash = pbkdf2Sync(pwd, salt, 1000, 64, 'sha512').toString('hex');
-  that.set({ salt, passwordHash });
+  this.set({ salt, passwordHash });
 });
