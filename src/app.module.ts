@@ -12,6 +12,7 @@ import { PictureModule } from './picture';
 import { AuthModule } from './auth';
 import { SessionModule } from './session/session.module';
 import { UserModule } from './user';
+import { TaskModule } from './task';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { UserModule } from './user';
     PictureModule,
     SessionModule,
     UserModule,
+    TaskModule,
   ],
   controllers: [AppController],
   providers: [AppService],

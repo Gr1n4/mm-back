@@ -3,6 +3,7 @@ import { HydratedDocument, Types } from 'mongoose';
 import { FileDocument } from 'src/file/file.schema';
 import { PictureDocument } from 'src/picture/picture.schema';
 import { LangModel, LangModelType } from 'src/utils';
+import { ModType } from './mod.types';
 
 @Schema()
 export class ModModel {
@@ -13,20 +14,27 @@ export class ModModel {
   @Prop(raw(LangModel))
   videoUrl: LangModelType;
 
+  @Prop({ type: String, enum: ModType, default: ModType.MOD })
+  type: ModType;
+
   @Prop({ type: String })
   cost: string;
 
   @Prop({ type: String })
   version: string;
 
+  // NOTE (luchko): used only for type seed.
+  @Prop({ type: String })
+  generationKey: string;
+
   @Prop({ type: Boolean, default: false })
   isNew: boolean;
 
   @Prop({ type: Boolean, default: false })
-  isRevarded: boolean;
+  isRewarded: boolean;
 
   @Prop({ type: Boolean, default: false })
-  isRevardedEng: boolean;
+  isRewardedEng: boolean;
 
   @Prop({ type: Number, default: 0 })
   priority: number;

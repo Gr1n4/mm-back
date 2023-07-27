@@ -1,12 +1,33 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 import { UserDocument, UserModel } from './user.schema';
 import { Option } from 'src/types';
+import { UserCreateDto, UserFeedDto } from './dto';
 
 @Injectable()
 export class UserService {
   constructor(@InjectModel(UserModel.name) private readonly userModel: Model<UserModel>) {}
+
+  async feed({ role }: UserFeedDto): Promise<UserDocument[]> {
+    return this.userModel.find({ role: { $in: role ?? [] } }).exec();
+  }
+
+  async createWithPassword({ email, role, password }: UserCreateDto & { password: string }): Promise<UserDocument> {
+    const oldUser = await this.getByEmail(email);
+    if (oldUser) {
+      throw new BadRequestException('User with this email already exists');
+    }
+    return this.userModel.create({ email, role, password, isActive: true });
+  }
+
+  async create({ email, role }: UserCreateDto): Promise<UserDocument> {
+    const oldUser = await this.getByEmail(email);
+    if (oldUser) {
+      throw new BadRequestException('User with this email already exists');
+    }
+    return this.userModel.create({ email, role });
+  }
 
   async getByEmailOrFail(email: string): Promise<UserDocument> {
     const user = await this.getByEmail(email);
@@ -30,5 +51,9 @@ export class UserService {
 
   getById(id: string): Promise<Option<UserDocument>> {
     return this.userModel.findById(id).exec();
+  }
+
+  findOne(query: FilterQuery<UserModel>): Promise<Option<UserDocument>> {
+    return this.userModel.findOne(query).exec();
   }
 }

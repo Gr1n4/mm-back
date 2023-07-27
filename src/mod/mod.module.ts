@@ -6,15 +6,22 @@ import { ModController } from './mod.controller';
 import { FileModule } from 'src/file';
 import { PictureModule } from 'src/picture';
 import { NestjsFormDataModule } from 'nestjs-form-data';
+import { SessionModule } from 'src/session';
+import { SortModModel, SortModSchema } from './sort-mod.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: ModModel.name, schema: ModSchema }]),
+    MongooseModule.forFeature([
+      { name: ModModel.name, schema: ModSchema },
+      { name: SortModModel.name, schema: SortModSchema },
+    ]),
     FileModule,
     PictureModule,
     NestjsFormDataModule,
+    SessionModule,
   ],
   controllers: [ModController],
   providers: [ModService],
+  exports: [ModService],
 })
 export class ModModule {}

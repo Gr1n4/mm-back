@@ -1,10 +1,26 @@
 import { Transform, Type } from 'class-transformer';
-import { IsArray, IsBoolean, IsDefined, IsInt, IsNotEmpty, IsObject, IsOptional, IsString, ValidateNested } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsDefined,
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsObject,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 import { HasMimeType, IsFile, MaxFileSize, MemoryStoredFile } from 'nestjs-form-data';
 import { MAX_FILE_UPLOAD_SIZE, MAX_IMAGE_UPLOAD_SIZE } from 'src/constants';
 import { LangDto } from 'src/utils';
+import { ModType } from '../mod.types';
 
 export class UpdateModDto {
+  @IsEnum(ModType)
+  @IsDefined()
+  type!: ModType;
+
   @IsObject()
   @ValidateNested()
   @Transform(({ value }) => (typeof value === 'string' ? JSON.parse(value) : value))
@@ -33,6 +49,10 @@ export class UpdateModDto {
   @IsString()
   version!: string;
 
+  @IsString()
+  @IsOptional()
+  generationKey?: string;
+
   @IsDefined()
   @IsNotEmpty()
   @IsString()
@@ -44,11 +64,11 @@ export class UpdateModDto {
 
   @IsBoolean()
   @Transform(({ value }) => (typeof value === 'string' ? JSON.parse(value) : value))
-  isRevarded?: boolean;
+  isRewarded?: boolean;
 
   @IsBoolean()
   @Transform(({ value }) => (typeof value === 'string' ? JSON.parse(value) : value))
-  isRevardedEng?: boolean;
+  isRewardedEng?: boolean;
 
   @IsInt()
   @Type(() => Number)
