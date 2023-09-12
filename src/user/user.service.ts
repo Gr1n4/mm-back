@@ -4,6 +4,7 @@ import { FilterQuery, Model } from 'mongoose';
 import { UserDocument, UserModel } from './user.schema';
 import { Option } from 'src/types';
 import { UserCreateDto, UserFeedDto } from './dto';
+import { RemoveEntity } from 'src/utils';
 
 @Injectable()
 export class UserService {
@@ -27,6 +28,10 @@ export class UserService {
       throw new BadRequestException('User with this email already exists');
     }
     return this.userModel.create({ email, role });
+  }
+
+  async removeById(id: string): Promise<RemoveEntity> {
+    return this.userModel.deleteOne({ _id: id }).exec();
   }
 
   async getByEmailOrFail(email: string): Promise<UserDocument> {

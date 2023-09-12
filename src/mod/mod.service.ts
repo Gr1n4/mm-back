@@ -29,6 +29,8 @@ export class ModService {
     isRewarded,
     isRewardedEng,
     priority,
+    generationKey,
+    tags,
     file,
     picture,
   }: CreateModDto): Promise<ModDocument> {
@@ -50,13 +52,15 @@ export class ModService {
       isRewarded,
       isRewardedEng,
       priority,
-      file: _file ?? _file._id,
+      generationKey,
+      tags,
+      file: _file ? _file._id : null,
       picture: _picture._id,
     });
     const { _id } = mod;
     const sortMods = await this.getSortedByType(type);
     if (sortMods) {
-      sortMods.mods.push(mod);
+      sortMods.mods.unshift(mod);
       await sortMods.save();
     } else {
       await this.sortModModel.create({ type, mods: [mod] });
